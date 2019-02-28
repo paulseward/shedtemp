@@ -4,6 +4,9 @@
 
 #include "credentials.h" // WiFi Network credentials
 
+// Setup the web server
+ESP8266WebServer server(80);  // Create a webserver object that listens for HTTP request on port 80
+
 void setup() {
   Serial.begin(115200);  // Start the Serial communication to send messages to the computer
   delay(10);
@@ -31,8 +34,6 @@ void setup() {
   }
   Serial.println("mDNS responder started");
 
-  // Setup the web server
-  ESP8266WebServer server(80);  // Create a webserver object that listens for HTTP request on port 80
   // function prototypes for HTTP handlers
   void handleRoot();
   void handleNotFound();
