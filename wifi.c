@@ -2,7 +2,7 @@
 #include <ESP8266mDNS.h> // mDNS
 #include <ESP8266WebServer.h> // Web server
 
-#include <./credentials.h> // WiFi Network credentials
+#include "credentials.h" // WiFi Network credentials
 
 void setup() {
   Serial.begin(115200);  // Start the Serial communication to send messages to the computer
