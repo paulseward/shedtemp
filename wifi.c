@@ -1,5 +1,6 @@
-#include <ESP8266WiFi.h> // Include the Wi-Fi library
-#include <ESP8266mDNS.h> // Include the mDNS library
+#include <ESP8266WiFi.h> // Wi-Fi (single ssid)
+#include <ESP8266mDNS.h> // mDNS
+#include <ESP8266WebServer.h> // Web server
 
 #include <./credentials.h> // WiFi Network credentials
 
@@ -29,6 +30,28 @@ void setup() {
     Serial.println("Error setting up MDNS responder!");
   }
   Serial.println("mDNS responder started");
+
+  // Setup the web server
+  ESP8266WebServer server(80);  // Create a webserver object that listens for HTTP request on port 80
+  // function prototypes for HTTP handlers
+  void handleRoot();
+  void handleNotFound();
+  // Call the 'handleRoot' function when a client requests URI "/"
+  server.on("/", handleRoot);
+  server.onNotFound(handleNotFound); // 404 Handler
+  // Start the web server
+  server.begin();
+  Serial.println("HTTP server started");
 }
 
-void loop() { }
+void loop(void){
+  server.handleClient();  // Listen for HTTP requests from clients
+}
+
+void handleRoot() {
+  server.send(200, "text/plain", "Hello world!");  // Send HTTP status 200 (Ok) and send some text to the browser/client
+}
+
+void handleNotFound(){
+  server.send(404, "text/plain", "404: Not found"); // Send HTTP status 404 (Not Found) when there's no handler for the URI in the request
+}
