@@ -2,4 +2,4 @@
 
 Reference:
 
-* Beginners guide: https://tttapa.github.io/ESP8266
+* Beginners guide: https://tttapa.github.io/ESP8266/Chap01%20-%20ESP8266.html
