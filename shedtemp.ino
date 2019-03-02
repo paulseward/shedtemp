@@ -28,8 +28,8 @@ void setup() {
   Serial.print("IP address:\t");
   Serial.println(WiFi.localIP());
 
-  // Start the mDNS responder for shedtemp.local
-  if (!MDNS.begin("shedtemp")) {
+  // Start the mDNS responder for <hostname>.local - see credentials.h
+  if (!MDNS.begin(hostname)) {
     Serial.println("Error setting up MDNS responder!");
   }
   Serial.println("mDNS responder started");
