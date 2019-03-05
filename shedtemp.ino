@@ -70,12 +70,12 @@ void handlePrometheus(){
   String payload;
   payload += "# HELP Temperature probes, in degrees C\n";
   payload += "# TYPE temperature gauge\n";
-  payload += "temperature {probeid=1} 12.5\n";
-  payload += "temperature {probeid=2} 12.5\n";
+  payload += "temperature{probeid=\"1\"} 12.5\n";
+  payload += "temperature{probeid=\"2\"} 12.5\n";
 
   payload += "# HELP Humidity probes\n";
   payload += "# TYPE humidity gauge\n";
-  payload += "humidity {probeid=3} 75\n";
+  payload += "humidity{probeid=\"3\"} 75\n";
 
   server.send(200, "text/plain; version=0.0.4", payload);
 }
