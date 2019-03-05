@@ -1,7 +1,6 @@
 #include <ESP8266WiFi.h> // Wi-Fi (single ssid)
 #include <ESP8266mDNS.h> // mDNS
 #include <ESP8266WebServer.h> // Web server
-#include <ezTime.h> // NTP Support
 
 #include "credentials.h" // WiFi Network credentials
 
@@ -35,29 +34,28 @@ void setup() {
   }
   Serial.println("mDNS responder started");
 
-  // NTP Sync
-  setServer(ntpServer);
-  waitForSync();
-  Serial.println("UTC: " + UTC.dateTime());
-  
   // function prototypes for HTTP handlers
   void handleRoot();
   void handleNotFound();
-  // Call the 'handleRoot' function when a client requests URI "/"
+
+  // HTTP Endpoints
   server.on("/", handleRoot);
   server.on("/metrics", handlePrometheus);
-  server.onNotFound(handleNotFound); // 404 Handler
+ // 404 Handler
+  server.onNotFound(handleNotFound);
+
   // Start the web server
   server.begin();
   Serial.println("HTTP server started");
 }
 
 void loop(void){
-  server.handleClient();  // Listen for HTTP requests from clients
+  // Handle HTTP requests
+  server.handleClient();
 }
 
 void handleRoot() {
-  server.send(200, "text/plain", "Hello world!  The time is "+UTC.dateTime(ISO8601));  // Send HTTP status 200 (Ok) and send some text to the browser/client
+  server.send(200, "text/plain", "Temperature data available at <a href=\"/metrics\">/metrics</a>");
 }
 
 void handleNotFound(){
