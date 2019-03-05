@@ -64,18 +64,18 @@ void handleNotFound(){
   server.send(404, "text/plain", "404: Not found"); // Send HTTP status 404 (Not Found) when there's no handler for the URI in the request
 }
 
-# Prometheus metrics endpoint
+// Prometheus metrics endpoint
 void handlePrometheus(){
   // See https://prometheus.io/docs/instrumenting/exposition_formats/
   String payload;
-  payload .= "# HELP Temperature probes, in degrees C"
-  payload .= "# TYPE temperature gauge"
-  payload .= "temperature {probeid=1} 12.5"
-  payload .= "temperature {probeid=2} 12.5"
+  payload += "# HELP Temperature probes, in degrees C\n";
+  payload += "# TYPE temperature gauge\n";
+  payload += "temperature {probeid=1} 12.5\n";
+  payload += "temperature {probeid=2} 12.5\n";
 
-  payload .= "# HELP Humidity probes"
-  payload .= "# TYPE humidity gauge"
-  payload .= "humidity {probeid=3} 75"
+  payload += "# HELP Humidity probes\n";
+  payload += "# TYPE humidity gauge\n";
+  payload += "humidity {probeid=3} 75\n";
 
   server.send(200, "text/plain; version=0.0.4", payload);
 }
