@@ -6,3 +6,6 @@ Reference:
 
 Libraries:
 * NTP: https://github.com/ropg/ezTime
+
+Prometheus:
+* Metrics endpoint: https://prometheus.io/docs/instrumenting/exposition_formats/
