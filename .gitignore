@@ -1,1 +1,3 @@
 credentials.h
+*console.log
+vagrant/.vagrant/*
