@@ -4,10 +4,16 @@
 
 #include "credentials.h" // WiFi Network credentials
 
+#define CHARGEPUMP D5  // Pin used to drive the chargepump that provides 5v for the sensors
+
 // Setup the web server
 ESP8266WebServer server(80);  // Create a webserver object that listens for HTTP request on port 80
 
 void setup() {
+  // Set the CHARGEPUMP pin to 50% duty cycle PWM
+  pinMode(CHARGEPUMP,OUTPUT);
+  analogWrite(CHARGEPUMP,127);
+
   Serial.begin(115200);  // Start the Serial communication to send messages to the computer
   delay(10);
   Serial.println('\n');
