@@ -6,14 +6,18 @@
 
 #include "credentials.h" // WiFi Network credentials
 
+// IO Pin definitions:
 // D0  = GPIO16;   D1  = GPIO5;    D2  = GPIO4;    D3  = GPIO0;
 // D4  = GPIO2;    D5  = GPIO14;   D6  = GPIO12;   D7  = GPIO13;
 // D8  = GPIO15;   D9  = GPIO3;    D10 = GPIO1;
+//
+#define CHARGEPUMP D5    // chargepump that provides 5v for the sensors
+#define PROBE_TEMP D3    // I2C Bus for the temperature probes
 
-#define ONE_WIRE_BUS D3
 #define TEMPERATURE_PRECISION 8
 
-OneWire one_wire(ONE_WIRE_BUS);
+// Set up the temperature probes
+OneWire one_wire(PROBE_TEMP);
 DallasTemperature sensors(&one_wire);
 DeviceAddress probes[20];
 int num_probes = 0;
@@ -24,6 +28,10 @@ float temperature = 0.0;
 ESP8266WebServer server(80);  // Create a webserver object that listens for HTTP request on port 80
 
 void setup() {
+  // Set the CHARGEPUMP pin to 50% duty cycle PWM
+  pinMode(CHARGEPUMP,OUTPUT);
+  analogWrite(CHARGEPUMP,127);
+
   Serial.begin(115200);  // Start the Serial communication to send messages to the computer
   delay(10);
   Serial.println('\n');
