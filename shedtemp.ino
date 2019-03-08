@@ -127,7 +127,7 @@ void handlePrometheus(){
     payload += "\"} ";
     payload += String(sensors.getTempC(probes[i]), DEC) + "\n";
 
-    Serial.println(probeID(probes[i]));
+    Serial.print(probeID(probes[i]) + ": ");
     Serial.println(sensors.getTempC(probes[i]));
   }
 
