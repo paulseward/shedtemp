@@ -11,8 +11,8 @@
 // D4  = GPIO2;    D5  = GPIO14;   D6  = GPIO12;   D7  = GPIO13;
 // D8  = GPIO15;   D9  = GPIO3;    D10 = GPIO1;
 //
-#define CHARGEPUMP D5    // chargepump that provides 5v for the sensors
-#define PROBE_TEMP D3    // I2C Bus for the temperature probes
+#define CHARGEPUMP D3    // chargepump that provides 5v for the sensors
+#define PROBE_TEMP D5    // I2C Bus for the temperature probes
 
 #define TEMPERATURE_PRECISION 8
 
@@ -30,7 +30,7 @@ ESP8266WebServer server(80);  // Create a webserver object that listens for HTTP
 void setup() {
   // Set the CHARGEPUMP pin to 50% duty cycle PWM
   pinMode(CHARGEPUMP,OUTPUT);
-  analogWrite(CHARGEPUMP,127);
+  analogWrite(CHARGEPUMP,512);
 
   Serial.begin(115200);  // Start the Serial communication to send messages to the computer
   delay(10);
