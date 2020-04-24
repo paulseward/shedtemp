@@ -69,12 +69,31 @@ void setup() {
   Serial.println("Connection established!");  
   Serial.print("IP address:\t");
   Serial.println(WiFi.localIP());
+  Serial.print("MAC address:\t");
+  Serial.println(WiFi.macAddress());
 
-  // Start the mDNS responder for <hostname>.local - see credentials.h
-  if (!MDNS.begin(hostname)) {
+  // Convert "00:01:02:03:04:05" to ,
+  char macStr[12] = { 0 };
+  sprintf(macStr, "%02s%02s%02s%02s%02s%02s",
+    WiFi.macAddress().substring(0,1),
+    WiFi.macAddress().substring(3,4),
+    WiFi.macAddress().substring(6,7),
+    WiFi.macAddress().substring(9,10),
+    WiFi.macAddress().substring(12,13),
+    WiFi.macAddress().substring(15,16);
+    
+  Serial.print("MAC address converted:\t");
+  Serial.println(macStr());
+
+  // Start the mDNS responder for <macStr>.local - see credentials.h
+  if (!MDNS.begin(macStr)) {
     Serial.println("Error setting up MDNS responder!");
   }
-  Serial.println("mDNS responder started");
+  // Make us discoverable
+  if (!MDNS.addService("shedtemp", "tcp", 80)) {
+    Serial.println("Error setting up MDNS service announcement!");
+  }
+  Serial.println("mDNS responder started OK");
 
   // function prototypes for HTTP handlers
   void handleRoot();
@@ -89,7 +108,7 @@ void setup() {
   // Start the web server
   server.begin();
   Serial.print("HTTP server started, listening on http://");
-  Serial.print(hostname);
+  Serial.print(macStr);
   Serial.println(".local:80");
 }
 
