@@ -12,7 +12,7 @@
 // D8  = GPIO15;   D9  = GPIO3;    D10 = GPIO1;
 //
 #define CHARGEPUMP D3    // chargepump that provides 5v for the sensors
-#define PROBE_TEMP D5    // I2C Bus for the temperature probes
+#define PROBE_TEMP 2     // I2C Bus for the temperature probes
 
 #define TEMPERATURE_PRECISION 8
 
