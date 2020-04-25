@@ -11,7 +11,6 @@
 // D4  = GPIO2;    D5  = GPIO14;   D6  = GPIO12;   D7  = GPIO13;
 // D8  = GPIO15;   D9  = GPIO3;    D10 = GPIO1;
 //
-#define CHARGEPUMP D3    // chargepump that provides 5v for the sensors
 #define PROBE_TEMP 2     // I2C Bus for the temperature probes
 
 #define TEMPERATURE_PRECISION 8
@@ -28,10 +27,6 @@ float temperature = 0.0;
 ESP8266WebServer server(80);  // Create a webserver object that listens for HTTP request on port 80
 
 void setup() {
-  // Set the CHARGEPUMP pin to 50% duty cycle PWM
-  pinMode(CHARGEPUMP,OUTPUT);
-  analogWrite(CHARGEPUMP,512);
-
   Serial.begin(115200);  // Start the Serial communication to send messages to the computer
   delay(10);
   Serial.println('\n');
@@ -72,21 +67,19 @@ void setup() {
   Serial.print("MAC address:\t");
   Serial.println(WiFi.macAddress());
 
-  // Convert "00:01:02:03:04:05" to ,
-  char macStr[12] = { 0 };
-  sprintf(macStr, "%02s%02s%02s%02s%02s%02s",
-    WiFi.macAddress().substring(0,1),
-    WiFi.macAddress().substring(3,4),
-    WiFi.macAddress().substring(6,7),
-    WiFi.macAddress().substring(9,10),
-    WiFi.macAddress().substring(12,13),
+  // Convert "00:01:02:03:04:05" to 000102030405,
+  String hostname = WiFi.macAddress().substring(0,1) +
+    WiFi.macAddress().substring(3,4) +
+    WiFi.macAddress().substring(6,7) +
+    WiFi.macAddress().substring(9,10) +
+    WiFi.macAddress().substring(12,13) +
     WiFi.macAddress().substring(15,16);
     
   Serial.print("MAC address converted:\t");
-  Serial.println(macStr());
+  Serial.println(hostname);
 
-  // Start the mDNS responder for <macStr>.local - see credentials.h
-  if (!MDNS.begin(macStr)) {
+  // Start the mDNS responder for <hostname>.local - see credentials.h
+  if (!MDNS.begin(hostname)) {
     Serial.println("Error setting up MDNS responder!");
   }
   // Make us discoverable
@@ -108,7 +101,7 @@ void setup() {
   // Start the web server
   server.begin();
   Serial.print("HTTP server started, listening on http://");
-  Serial.print(macStr);
+  Serial.print(hostname);
   Serial.println(".local:80");
 }
 
