@@ -85,7 +85,8 @@ void setup() {
   Serial.println("mDNS responder started OK");
   // Make us discoverable
   MDNS.addService("temp-probe", "tcp", 80);
-   
+  MDNS.addServiceTxt("temp-probe", "tcp", "path", "/metrics");
+  
   // function prototypes for HTTP handlers
   void handleRoot();
   void handleNotFound();
