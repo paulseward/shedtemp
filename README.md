@@ -1,4 +1,4 @@
-# ESP8266 based Temp/Humidity sensing for the shed
+# ESP8266 based Temperature sensing for the shed
 
 Reference:
 

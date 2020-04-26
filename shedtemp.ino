@@ -145,10 +145,6 @@ void handlePrometheus(){
     Serial.println(sensors.getTempC(probes[i]));
   }
 
-  payload += "# HELP Humidity probes\n";
-  payload += "# TYPE humidity gauge\n";
-  payload += "humidity{probeid=\"3\"} 75\n";
-
   server.send(200, "text/plain; version=0.0.4", payload);
 }
 
