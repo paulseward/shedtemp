@@ -1,5 +1,5 @@
 #include <ESP8266WiFi.h> // Wi-Fi (single ssid)
-#include <ESP8266mDNS.h> // mDNS
+#include <ESP8266mDNS.h>
 #include <ESP8266WebServer.h> // Web server
 #include <OneWire.h> // One Wire Sensors
 #include <DallasTemperature.h> // Temperature conversion
@@ -11,7 +11,8 @@
 // D4  = GPIO2;    D5  = GPIO14;   D6  = GPIO12;   D7  = GPIO13;
 // D8  = GPIO15;   D9  = GPIO3;    D10 = GPIO1;
 //
-#define PROBE_TEMP D5    // I2C Bus for the temperature probes
+#define PROBE_TEMP 2     // I2C Bus for the temperature probes
+
 #define TEMPERATURE_PRECISION 8
 
 // Set up the temperature probes
@@ -66,29 +67,25 @@ void setup() {
   Serial.print("MAC address:\t");
   Serial.println(WiFi.macAddress());
 
-  // Convert "00:01:02:03:04:05" to ,
-  char macStr[12] = { 0 };
-  sprintf(macStr, "%02s%02s%02s%02s%02s%02s",
-    WiFi.macAddress().substring(0,1),
-    WiFi.macAddress().substring(3,4),
-    WiFi.macAddress().substring(6,7),
-    WiFi.macAddress().substring(9,10),
-    WiFi.macAddress().substring(12,13),
-    WiFi.macAddress().substring(15,16);
+  // Convert "00:01:02:03:04:05" to 000102030405,
+  String hostname = WiFi.macAddress().substring(0,2) +
+    WiFi.macAddress().substring(3,5) +
+    WiFi.macAddress().substring(6,8) +
+    WiFi.macAddress().substring(9,11) +
+    WiFi.macAddress().substring(12,12) +
+    WiFi.macAddress().substring(15,17);
     
   Serial.print("MAC address converted:\t");
-  Serial.println(macStr());
+  Serial.println(hostname);
 
-  // Start the mDNS responder for <macStr>.local - see credentials.h
-  if (!MDNS.begin(macStr)) {
+  // Start the mDNS responder for <hostname>.local
+  if (!MDNS.begin(hostname)) {
     Serial.println("Error setting up MDNS responder!");
   }
-  // Make us discoverable
-  if (!MDNS.addService("shedtemp", "tcp", 80)) {
-    Serial.println("Error setting up MDNS service announcement!");
-  }
   Serial.println("mDNS responder started OK");
-
+  // Make us discoverable
+  MDNS.addService("temp-probe", "tcp", 80);
+   
   // function prototypes for HTTP handlers
   void handleRoot();
   void handleNotFound();
@@ -102,11 +99,14 @@ void setup() {
   // Start the web server
   server.begin();
   Serial.print("HTTP server started, listening on http://");
-  Serial.print(macStr);
+  Serial.print(hostname);
   Serial.println(".local:80");
 }
 
 void loop(void){
+  // Update mDNS advertisments
+  MDNS.update();
+  
   // Handle HTTP requests
   server.handleClient();
 
