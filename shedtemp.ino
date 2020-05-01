@@ -91,12 +91,8 @@ void setup() {
     Serial.println("mDNS responder started OK");
   }
   // Make us discoverable
-  if (MDNS.addService("temp-probe", "tcp", 80)) {
-    Serial.println("mDNS SVC added");
-  }
-  else {
-    Serial.println("mDNS SVC failed");
-  }
+  MDNS.addService("temp-probe", "tcp", 80);
+  MDNS.addServiceTxt("temp-probe", "tcp", "path", "/metrics");
   
   // function prototypes for HTTP handlers
   void handleRoot();
