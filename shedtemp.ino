@@ -1,7 +1,7 @@
-#include <ESP8266WiFi.h> // Wi-Fi (single ssid)
-#include <ESP8266mDNS.h>
-#include <ESP8266WebServer.h> // Web server
-#include <OneWire.h> // One Wire Sensors
+#include <ESP8266WiFi.h>       // Wi-Fi (single ssid)
+#include <ESP8266mDNS.h>       // mDNS for discovery
+#include <ESP8266WebServer.h>  // Web server
+#include <OneWire.h>           // One Wire Sensors
 #include <DallasTemperature.h> // Temperature conversion
 
 #include "credentials.h" // WiFi Network credentials
@@ -49,7 +49,12 @@ void setup() {
 
   float tempC = sensors.getTempCByIndex(0);
 
-  WiFi.begin(ssid, password);  // Connect to the network
+  // Disable AP mode
+  WiFi.mode(WIFI_STA);
+  WiFi.softAPdisconnect(true);
+
+  // Connect to the network
+  WiFi.begin(ssid, password);
   Serial.print("Connecting to ");
   Serial.print(ssid); Serial.println(" ...");
 
@@ -82,10 +87,16 @@ void setup() {
   if (!MDNS.begin(hostname)) {
     Serial.println("Error setting up MDNS responder!");
   }
-  Serial.println("mDNS responder started OK");
+  else {
+    Serial.println("mDNS responder started OK");
+  }
   // Make us discoverable
-  MDNS.addService("temp-probe", "tcp", 80);
-  MDNS.addServiceTxt("temp-probe", "tcp", "path", "/metrics");
+  if (MDNS.addService("temp-probe", "tcp", 80)) {
+    Serial.println("mDNS SVC added");
+  }
+  else {
+    Serial.println("mDNS SVC failed");
+  }
   
   // function prototypes for HTTP handlers
   void handleRoot();
